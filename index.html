@@ -1,1 +1,90 @@
-criar página inicial do moral entregas 
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moral Entregas</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
+header{background:#087443;color:white;padding:24px 18px;border-radius:0 0 22px 22px}
+header h1{margin:0 0 8px;font-size:27px}
+header p{margin:0}
+main{max-width:600px;margin:auto;padding:18px}
+.card{background:white;padding:18px;border-radius:16px;margin-bottom:16px;box-shadow:0 3px 12px #0000000b}
+h2{font-size:19px;margin-top:0}
+label{display:block;font-weight:bold;margin:12px 0 6px}
+input,select,button{width:100%;padding:13px;border-radius:9px;font-size:16px}
+input,select{border:1px solid #cbd5e1;background:white}
+button{border:0;background:#087443;color:white;font-weight:bold;margin-top:14px}
+.secondary{background:#e2e8f0;color:#172033}
+.item{border-top:1px solid #e2e8f0;padding:13px 0;overflow-wrap:anywhere}
+.small{font-size:13px;color:#64748b}
+footer{text-align:center;padding:20px;color:#64748b;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<h1>🚚 Moral Entregas</h1>
+<p>Sua entrega, acompanhada com facilidade.</p>
+</header>
+<main>
+<section class="card">
+<h2>📦 Cadastrar entrega</h2>
+<form id="form">
+<label for="cliente">Nome do cliente</label>
+<input id="cliente" required placeholder="Nome completo">
+<label for="origem">Local de retirada</label>
+<input id="origem" required placeholder="Endereço de retirada">
+<label for="destino">Endereço de entrega</label>
+<input id="destino" required placeholder="Endereço de destino">
+<label for="telefone">Telefone do cliente</label>
+<input id="telefone" type="tel" placeholder="(DDD) telefone">
+<label for="valor">Valor da entrega (R$)</label>
+<input id="valor" type="number" min="0" step="0.01" required placeholder="0,00">
+<button type="submit">Cadastrar entrega</button>
+</form>
+<p class="small">Esta versão salva os registros somente neste navegador.</p>
+</section>
+<section class="card">
+<h2>🔎 Consultar entrega</h2>
+<label for="busca">Código da entrega</label>
+<input id="busca" placeholder="Ex.: MORAL-123456">
+<button type="button" id="consultar">Consultar</button>
+<div id="resultado"></div>
+</section>
+<section class="card">
+<h2>📋 Entregas cadastradas neste aparelho</h2>
+<div id="lista"></div>
+</section>
+</main>
+<footer>Moral Entregas • Primeira versão</footer>
+<script>
+const chave="moral-entregas-v1";
+function ler(){try{return JSON.parse(localStorage.getItem(chave)||"[]")}catch(e){return[]}}
+function escapar(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){
+const dados=ler();
+document.getElementById("lista").innerHTML=dados.length?dados.slice().reverse().map(e=>`<div class="item"><b>${escapar(e.codigo)}</b><br>${escapar(e.cliente)}<br>${escapar(e.destino)}<br>Status: ${escapar(e.status)}<br><span class="small">Valor: R$ ${Number(e.valor).toFixed(2).replace(".",",")}</span><label>Status da entrega</label><select onchange="statusEntrega('${e.codigo}',this.value)"><option ${e.status==="Recebida"?"selected":""}>Recebida</option><option ${e.status==="Em preparação"?"selected":""}>Em preparação</option><option ${e.status==="Saiu para entrega"?"selected":""}>Saiu para entrega</option><option ${e.status==="Entregue"?"selected":""}>Entregue</option></select></div>`).join(""):"<p>Nenhuma entrega cadastrada neste aparelho.</p>";
+}
+function statusEntrega(codigo,status){const dados=ler();const e=dados.find(x=>x.codigo===codigo);if(e){e.status=status;localStorage.setItem(chave,JSON.stringify(dados));render()}}
+document.getElementById("form").addEventListener("submit",function(ev){
+ev.preventDefault();
+const dados=ler();
+const codigo="MORAL-"+Math.random().toString(10).slice(2,8);
+dados.push({codigo,cliente:document.getElementById("cliente").value,origem:document.getElementById("origem").value,destino:document.getElementById("destino").value,telefone:document.getElementById("telefone").value,valor:document.getElementById("valor").value,status:"Recebida"});
+localStorage.setItem(chave,JSON.stringify(dados));
+alert("Entrega cadastrada! Código: "+codigo);
+this.reset();render();
+});
+document.getElementById("consultar").addEventListener("click",function(){
+const codigo=document.getElementById("busca").value.trim().toUpperCase();
+const e=ler().find(x=>x.codigo.toUpperCase()===codigo);
+document.getElementById("resultado").innerHTML=e?`<div class="item"><b>${escapar(e.codigo)}</b><p>Cliente: ${escapar(e.cliente)}</p><p>Destino: ${escapar(e.destino)}</p><p>Status: <b>${escapar(e.status)}</b></p></div>`:"<p>Entrega não encontrada neste navegador.</p>";
+});
+render();
+</script>
+</body>
+</html>
