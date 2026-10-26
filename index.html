@@ -90,7 +90,7 @@ campo("form").addEventListener("submit",async ev=>{
     origem:campo("origem").value.trim(),
     destino:campo("destino").value.trim(),
     telefone:campo("telefone").value.trim(),
-    valentia:Number(campo("valor").value),
+    valor:Number(campo("valor").value),
     status:"Recebida"
   };
   const {error} = await db.from("entregas").insert(entrega);
