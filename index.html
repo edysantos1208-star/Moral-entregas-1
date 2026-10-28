@@ -64,21 +64,12 @@ const campo = id => document.getElementById(id);
 const escapar = s => String(s ?? "").replace(/[&<>"']/g, c =>
 ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-async function carregar(){
-  campo("lista").textContent = "Carregando...";
-  const {data,error} = await db.from("entregas")
-    .select("*").order("criado_em",{ascending:false});
-  if(error){
-    campo("lista").textContent = "Erro ao carregar: " + error.message;
-    return;
-  }
-  campo("lista").innerHTML = data.length ? data.map(e =>
-    `<div class="item"><b>${escapar(e.codigo)}</b><br>
-    Cliente: ${escapar(e.cliente)}<br>
-    Status: ${escapar(e.status)}<br>
-    Destino: ${escapar(e.destino)}</div>`
-  ).join("") : "Nenhuma entrega cadastrada.";
+
+async function carregar() {
+  campo("lista").textContent =
+    "Lista completa disponível somente no painel administrativo.";
 }
+  
 
 campo("form").addEventListener("submit",async ev=>{
   ev.preventDefault();
