@@ -96,8 +96,9 @@ campo("form").addEventListener("submit",async ev=>{
 
 campo("consultar").addEventListener("click",async()=>{
   const codigo = campo("busca").value.trim().toUpperCase();
-  const {data,error} = await db.from("entregas")
-    .select("*").eq("codigo",codigo).maybeSingle();
+  const {data,error} = await db.rpc("consultar_entrega", {
+  codigo_busca: codigo
+});
   if(error){
     campo("resultado").textContent = "Erro: " + error.message;
     return;
