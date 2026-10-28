@@ -103,12 +103,17 @@ campo("consultar").addEventListener("click",async()=>{
     campo("resultado").textContent = "Erro: " + error.message;
     return;
   }
-  campo("resultado").innerHTML = data
-    ? `<div class="item"><b>${escapar(data.codigo)}</b><br>
-       Cliente: ${escapar(data.cliente)}<br>
-       Status: ${escapar(data.status)}<br>
-       Destino: ${escapar(data.destino)}</div>`
-    : "Entrega não encontrada.";
+  
+campo("resultado").innerHTML = data
+  ? `<div class="item"><b>${escapar(data.codigo)}</b><br>
+     Cliente: ${escapar(data.cliente)}<br>
+     Origem: ${escapar(data.origem)}<br>
+     Destino: ${escapar(data.destino)}<br>
+     Telefone: ${escapar(data.telefone || "Não informado")}<br>
+     Valor: R$ ${escapar(data.valor)}<br>
+     Status: ${escapar(data.status)}</div>`
+  : "Entrega não encontrada.";
+  
 });
 
 carregar();
