@@ -96,6 +96,11 @@ async function carregar() {
 }
   
 
+async function carregar() {
+  campo("lista").textContent =
+    "Lista completa disponível somente no painel administrativo.";
+  }
+  
 campo("form").addEventListener("submit",async ev=>{
   ev.preventDefault();
   campo("mensagem").textContent = "Salvando...";
