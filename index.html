@@ -66,8 +66,33 @@ const escapar = s => String(s ?? "").replace(/[&<>"']/g, c =>
 
 
 async function carregar() {
-  campo("lista").textContent =
-    "Lista completa disponível somente no painel administrativo.";
+  const { data, error } = await db
+    .from("entregas")
+    .select("codigo, cliente, origem, destino, telefone, valor, status")
+    .order("id", { ascending: false });
+
+  if (error) {
+    campo("lista").textContent =
+      "Erro ao carregar entregas: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    campo("lista").textContent = "Nenhuma entrega cadastrada.";
+    return;
+  }
+
+  campo("lista").innerHTML = data.map(e => `
+    <div class="item">
+      <b>${escapar(e.codigo)}</b><br>
+      Cliente: ${escapar(e.cliente)}<br>
+      Origem: ${escapar(e.origem)}<br>
+      Destino: ${escapar(e.destino)}<br>
+      Telefone: ${escapar(e.telefone || "Não informado")}<br>
+      Valor: R$ ${Number(e.valor).toFixed(2).replace(".", ",")}<br>
+      Status: ${escapar(e.status)}
+    </div>
+  `).join("");
 }
   
 
